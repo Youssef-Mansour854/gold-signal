@@ -1,0 +1,37 @@
+{
+  "name": "gold-signal-dashboard",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "dev": "concurrently -k -n api,web \"node server/index.mjs\" \"vite\"",
+    "start": "node server/index.mjs",
+    "build": "tsc -b && vite build",
+    "test": "node --test",
+    "migrate:mongodb": "node scripts/migrate-sqlite-to-mongodb.mjs",
+    "mongo:doctor": "node mongo/doctor.mjs",
+    "mongo:migrate": "node mongo/migrate.mjs",
+    "mongo:verify-ledger": "node mongo/verify-ledger.mjs",
+    "mongo:report": "node mongo/report.mjs",
+    "mongo:integrity": "node mongo/integrity.mjs",
+    "mongo:import-legacy": "node mongo/import-legacy.mjs --dry-run",
+    "mongo:seed-test": "node mongo/seed-fixtures.mjs",
+    "preview": "vite preview"
+  },
+  "engines": {
+    "node": ">=22.13"
+  },
+  "dependencies": {
+    "mongodb": "^6.12.0",
+    "react": "^18.3.1",
+    "react-dom": "^18.3.1"
+  },
+  "devDependencies": {
+    "@types/react": "^18.3.12",
+    "@types/react-dom": "^18.3.1",
+    "@vitejs/plugin-react": "^4.3.4",
+    "concurrently": "^9.1.0",
+    "typescript": "^5.7.2",
+    "vite": "^6.0.5"
+  }
+}
