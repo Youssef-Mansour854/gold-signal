@@ -65,6 +65,10 @@ npm run build
 npm start
 ```
 
+## النشر على Vercel
+
+استورد المستودع في Vercel؛ الإعدادات موجودة في `vercel.json` (Vite + `dist`). Vercel يستضيف **الواجهة فقط**: خادم API هو عملية Node دائمة تقرأ وتكتب SQLite وتستطلع السعر كل 30 ثانية، وهذا لا يعمل في بيئة serverless. لذلك شغّل `npm start` على مضيف دائم (VPS أو Render أو ما شابه) ثم اضبط متغير البيئة `API_UPSTREAM_URL` في إعدادات مشروع Vercel ليشير إلى الرابط العام لذلك الخادم، مثال `https://api.example.com`. دالة `api/[...path].mjs` تعيد توجيه طلبات `/api/*` إليه، وتُرجع `503` برسالة واضحة إذا لم يُضبط المتغير. لا تضع `FRED_API_KEY` أو `MONGODB_URI` في متغيرات Vercel؛ هذه تخص الخادم الدائم فقط.
+
 ## مصدر السعر وتخزينه
 
 - يجلب الخادم XAU/USD من `https://api.gold-api.com/price/XAU` كل 30 ثانية. السعر بالدولار لكل أونصة تروي.
