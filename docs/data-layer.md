@@ -1,16 +1,19 @@
 # MongoDB data layer — design, mapping and open questions
 
-Status: **implemented locally, pending live deployment verification**. This document was written before
-any data-layer code (Step 0), then the layer was implemented exactly as planned. No migration has been
-applied to the configured Atlas deployment and no live MongoDB data was written.
-Date: 2026-11-23.
+Status: **migrations applied on Atlas; audit layer still disabled by policy**. This document describes
+the append-only audit/evaluation layer under `mongo/`. It is separate from the bot's **runtime state**,
+which now lives in a single atomic document in `runtime_state` (`server/runtime.mjs`) and is what both
+`server/index.mjs` and the Vercel `api/` functions read and write.
+Date: 2026-11-24.
 
 ## 0. Scope and non-negotiables
 
-This layer is **additive**. The running bot (`server/index.mjs` + SQLite at `data/gold-signal.sqlite`) is
-not modified by this work. MongoDB is a new, parallel, append-only store for facts, evaluations and
-reports. A feature flag (`MONGO_DATA_LAYER_ENABLED`) controls any future mirroring of live writes;
-it defaults to `false` and no current code path depends on it.
+This audit layer is **additive**: it does not write to the bot's runtime state and it never rewrites the
+legacy collections. A feature flag (`MONGO_DATA_LAYER_ENABLED`) controls any future mirroring of live
+writes; it defaults to `false` and no current code path depends on it. The four migrations are applied
+on Atlas (15 collections with strict validators, indexes, 6 views, dictionary and baseline seeds).
+The managed Atlas tier rejects `createRole`/`dropRole`, so `deployment_gaps/custom_roles_unavailable`
+is recorded and `doctor` reports `ok:false` for `custom_roles`; keep the flag `false`.
 
 | Principle | How it is enforced |
 |---|---|
